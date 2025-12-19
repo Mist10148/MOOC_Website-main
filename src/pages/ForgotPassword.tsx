@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// --- API Endpoint: Targeting the Flask Backend (app.py) on port 5000 ---
 // --- API Endpoint: Targeting the Flask Backend (app.py) ---
 const AUTH_API_URL = "https://mooc-python-backend.onrender.com";
 // -----------------------------------------------------------------------
@@ -52,7 +51,8 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${AUTH_API_URL}/forgot-password`, {
+      // ✅ FIX: Added /api/auth/ to the path to match app.py
+      const response = await fetch(`${AUTH_API_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
