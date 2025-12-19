@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 // --- ABSOLUTE URL: CRITICAL FIX for XAMPP connection ---
-const API_BASE_URL = "http://localhost/mooc_api";
+const API_BASE_URL = "https://mooc-php-backend.onrender.com";
 // --------------------------------------------------------
 
 // Utility function for basic email format validation

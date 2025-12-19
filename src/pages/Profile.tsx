@@ -36,7 +36,7 @@ type CourseReview = {
 };
 
 // ✅ data coming from PHP/MySQL
-const API_URL = "http://localhost/mooc_api/get_courses.php";
+const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
 
 
 

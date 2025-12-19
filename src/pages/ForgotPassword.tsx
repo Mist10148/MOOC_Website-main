@@ -8,7 +8,8 @@ import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // --- API Endpoint: Targeting the Flask Backend (app.py) on port 5000 ---
-const AUTH_API_URL = "http://localhost:5000/api/auth";
+// --- API Endpoint: Targeting the Flask Backend (app.py) ---
+const AUTH_API_URL = "https://mooc-python-backend.onrender.com/api/auth";
 // -----------------------------------------------------------------------
 
 // Utility function for basic email format validation

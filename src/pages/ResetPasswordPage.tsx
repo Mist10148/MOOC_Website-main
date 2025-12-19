@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 // --- API Endpoint: Targeting the Flask Backend (app.py) on port 5000 ---
-const AUTH_API_URL = "http://localhost:5000/api/auth";
+const AUTH_API_URL = "https://mooc-python-backend.onrender.com/api/auth";
 // -----------------------------------------------------------------------
 
 // NEW CONSTANT for minimum password length
