@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import LiquidEther from "@/components/ui/liquidether";
 
-// Icons (Extended imports for user avatars)
+// Icons
 import {
   Menu,
   ChevronLeft,
@@ -25,7 +25,7 @@ import {
   ArrowLeft,
   Send,
   Clock,
-  User as UserIcon, // Added UserIcon for fallback
+  User as UserIcon,
   Smile, 
   Heart, 
   Star, 
@@ -47,22 +47,21 @@ import { cn } from "@/lib/utils";
 
 const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
 const UPDATE_PROGRESS_API = "https://mooc-php-backend.onrender.com/update_course_progress.php";
+// ✅ NEW: Added to sync DB progress with UI
+const GET_ENROLLMENTS_API = "https://mooc-php-backend.onrender.com/get_user_enrollments.php";
 
-// NEW: Avatar Map definition (Matches the keys and icons from AvatarSelector.tsx)
-// NOTE: The 'bgClass' values (e.g., bg-secondary) must be correctly defined in your CSS/Tailwind config to render colors.
 const AVATAR_MAP: { [key: string]: { icon: React.ElementType, bgClass: string } } = {
-  smile: { icon: Smile, bgClass: "bg-secondary" }, // Assume bg-secondary is defined
-  heart: { icon: Heart, bgClass: "bg-coral" },     // Assume bg-coral is defined
-  star: { icon: Star, bgClass: "bg-gold" },       // Assume bg-gold is defined
-  zap: { icon: Zap, bgClass: "bg-accent" },       // Assume bg-accent is defined
-  leaf: { icon: Leaf, bgClass: "bg-primary" },    // Assume bg-primary is defined
+  smile: { icon: Smile, bgClass: "bg-secondary" }, 
+  heart: { icon: Heart, bgClass: "bg-coral" },     
+  star: { icon: Star, bgClass: "bg-gold" },       
+  zap: { icon: Zap, bgClass: "bg-accent" },       
+  leaf: { icon: Leaf, bgClass: "bg-primary" },    
   coffee: { icon: Coffee, bgClass: "bg-coral-light" },
   music: { icon: Music, bgClass: "bg-teal" },
   palette: { icon: Palette, bgClass: "bg-blue" },
   bookopen: { icon: BookOpen, bgClass: "bg-purple" },
   globe: { icon: Globe, bgClass: "bg-indigo" },
   sun: { icon: Sun, bgClass: "bg-yellow" },
-  // Default fallback is handled by logic later
 };
 
 
@@ -122,28 +121,19 @@ export default function LessonView() {
   // ------------------------------------------
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
-  const [userAvatarId, setUserAvatarId] = useState<string | null>(null); // NEW STATE for avatar ID
+  const [userAvatarId, setUserAvatarId] = useState<string | null>(null); 
 
   useEffect(() => {
-    // 1. Get ID
     let userId = 23; // Fallback default
     try {
       const userRaw = localStorage.getItem("silaylearn_user");
       if (userRaw) {
         const parsed = JSON.parse(userRaw);
         if (parsed.dbId) userId = Number(parsed.dbId);
-        
-        // Retrieve Avatar URL first
         if (parsed.profile_picture) setUserAvatar(parsed.profile_picture);
-        else if (parsed.avatar) setUserAvatar(parsed.avatar); // Fallback for 'avatar' field if it's a URL
-        
-        // Retrieve Avatar ID if it exists
-        if (parsed.avatarId) {
-            setUserAvatarId(parsed.avatarId);
-        }
-
+        else if (parsed.avatar) setUserAvatar(parsed.avatar); 
+        if (parsed.avatarId) setUserAvatarId(parsed.avatarId);
       } else {
-        // Fallback to old structure
         const oldUserRaw = localStorage.getItem("user");
         if (oldUserRaw) {
           const parsed = JSON.parse(oldUserRaw);
@@ -186,18 +176,41 @@ export default function LessonView() {
   // 3. Effects
   // ------------------------------------------
 
-  // Restore completed lessons
+  // ✅ FIX: Load completed lessons, BUT verify against Server 0% state
   useEffect(() => {
     if (!id || !currentUserId) return;
     const storageKey = `completed_${currentUserId}_${id}`;
+    
+    // 1. Load Local Storage first (Optimistic)
     const stored = localStorage.getItem(storageKey);
-    if (!stored) return;
-    try {
-      const arr = JSON.parse(stored) as string[];
-      setCompleted(new Set(arr));
-    } catch (e) {
-      console.error("Failed to parse saved completed lessons", e);
+    if (stored) {
+      try {
+        const arr = JSON.parse(stored) as string[];
+        setCompleted(new Set(arr));
+      } catch (e) {
+        console.error("Failed to parse saved completed lessons", e);
+      }
     }
+
+    // 2. Check Real DB Status. If 0%, wipe local cache.
+    const syncWithDb = async () => {
+        try {
+            const res = await axios.get(`${GET_ENROLLMENTS_API}?user_id=${currentUserId}`);
+            if (res.data.success) {
+                const enrollment = res.data.data.find((e: any) => String(e.course_id) === String(id));
+                // If Server says 0% progress, assume reset and clear local cache
+                if (enrollment && (Number(enrollment.progress) === 0)) {
+                    setCompleted(new Set());
+                    localStorage.removeItem(storageKey);
+                    console.log("DB says 0% progress. Syncing UI...");
+                }
+            }
+        } catch (err) {
+            console.warn("Could not sync progress with DB", err);
+        }
+    };
+    syncWithDb();
+
   }, [id, currentUserId]);
 
   // Parse URL slug
