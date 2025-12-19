@@ -360,7 +360,7 @@ export default function LessonView() {
     setIsTyping(true);
 
     try {
-      const res = await axios.post("http://127.0.0.1:5000/chat", {
+      const res = await axios.post("https://mooc-python-backend.onrender.com/chat", {
         user_id: currentUserId,
         message: userMessage,
         lesson_title: currentLesson?.title ?? "",
