@@ -49,7 +49,7 @@ type CourseStripFromApi = {
   course_thumbnail_url?: string | null;
 };
 
-const COURSES_API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
+const COURSES_API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
 
 
 function PremiumTiltCard({

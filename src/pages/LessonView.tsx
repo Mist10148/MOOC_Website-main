@@ -45,8 +45,8 @@ import { cn } from "@/lib/utils";
 /* TYPES & CONFIG                               */
 /* -------------------------------------------------------------------------- */
 
-const API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
-const UPDATE_PROGRESS_API = "https://mooc-php-backend.onrender.com/mooc_api/update_course_progress.php";
+const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
+const UPDATE_PROGRESS_API = "https://mooc-php-backend.onrender.com/update_course_progress.php";
 
 // NEW: Avatar Map definition (Matches the keys and icons from AvatarSelector.tsx)
 // NOTE: The 'bgClass' values (e.g., bg-secondary) must be correctly defined in your CSS/Tailwind config to render colors.

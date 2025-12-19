@@ -20,12 +20,13 @@ type Lesson = {
 };
 
 // const API_URL = ""; //
-const API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
-const ENROLL_COURSE_URL = "https://mooc-php-backend.onrender.com/mooc_api/enroll_course.php";
-const CREATE_COMMENT_URL = "https://mooc-php-backend.onrender.com/mooc_api/create_comment.php";
-const GET_COMMENTS_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_comments.php";
-const DELETE_COMMENT_URL = "https://mooc-php-backend.onrender.com/mooc_api/delete_comment.php";
-const UPDATE_COMMENT_URL = "https://mooc-php-backend.onrender.com/mooc_api/update_comment.php";
+const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
+const ENROLL_COURSE_URL = "https://mooc-php-backend.onrender.com/enroll_course.php";
+const CREATE_COMMENT_URL = "https://mooc-php-backend.onrender.com/create_comment.php";
+const GET_COMMENTS_URL = "https://mooc-php-backend.onrender.com/get_comments.php";
+const DELETE_COMMENT_URL = "https://mooc-php-backend.onrender.com/delete_comment.php";
+const UPDATE_COMMENT_URL = "https://mooc-php-backend.onrender.com/update_comment.php";
+
 type ReviewFromApi = {
   comment_id: number;
   content_id: number;
