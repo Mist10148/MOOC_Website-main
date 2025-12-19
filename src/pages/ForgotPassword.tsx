@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 
 // --- API Endpoint: Targeting the Flask Backend (app.py) on port 5000 ---
 // --- API Endpoint: Targeting the Flask Backend (app.py) ---
-const AUTH_API_URL = "https://mooc-python-backend.onrender.com/api/auth";
+const AUTH_API_URL = "https://mooc-python-backend.onrender.com";
 // -----------------------------------------------------------------------
 
 // Utility function for basic email format validation
