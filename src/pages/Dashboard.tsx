@@ -13,7 +13,7 @@ import LiquidEther from "@/components/ui/liquidether";
 // 🔹 Same shape as whatever your mockEnrollments use
 type Enrollment = (typeof mockEnrollments)[number];
 
-const ENROLLMENTS_API = "https://mooc-php-backend.onrender.com/get_user_enrollments.php";
+const ENROLLMENTS_API = "https://mooc-php-backend.onrender.com/mooc_api/get_user_enrollments.php";
 
 const Dashboard = () => {
   const { user } = useAuth();

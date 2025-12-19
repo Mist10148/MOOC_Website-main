@@ -12,7 +12,7 @@ type CourseFromApi = {
   course_thumbnail_url?: string | null; // ✅ from get_courses.php (like CoursePreview)
 };
 
-const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
+const API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
 
 const CategoriesSection = () => {
   const [dbCourses, setDbCourses] = useState<CourseFromApi[]>([]);

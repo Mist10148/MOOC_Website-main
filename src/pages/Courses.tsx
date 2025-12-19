@@ -46,7 +46,7 @@ interface CourseCard {
 const categories = ["All", "Tourism", "Cooking", "Language", "History"];
 
 // adjust base URL if your folder name / path is different
-const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
+const API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
 
 const Courses = () => {
   const [courses, setCourses] = useState<CourseCard[]>([]);

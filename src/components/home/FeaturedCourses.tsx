@@ -15,7 +15,7 @@ type CourseFromApi = {
   course_price: number;
 };
 
-const API_URL = "https://mooc-php-backend.onrender.com/get_courses.php";
+const API_URL = "https://mooc-php-backend.onrender.com/mooc_api/get_courses.php";
 
 const FeaturedCourses = () => {
   const [dbCourses, setDbCourses] = useState<CourseFromApi[]>([]);

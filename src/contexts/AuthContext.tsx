@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 // ✅ API CONFIGURATION: HYBRID BACKEND
 // =======================================================================
 // PHP auth API base (Login, Register, Update Profile)
-const AUTH_API_BASE = "https://mooc-php-backend.onrender.com/api/auth";
+const AUTH_API_BASE = "https://mooc-php-backend.onrender.com/mooc_api/api/auth";
 // Flask API base for secure endpoints (Delete Account, Reset Password)
 const FLASK_API_BASE = "https://mooc-python-backend.onrender.com";
 // =======================================================================
