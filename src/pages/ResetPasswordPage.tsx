@@ -8,11 +8,11 @@ import { KeyRound, CheckCircle, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-// --- API Endpoint: Targeting the Flask Backend (app.py) on port 5000 ---
-const AUTH_API_URL = "https://mooc-python-backend.onrender.com";
+// --- API Endpoint: Targeting the PHP Backend ---
+const AUTH_API_URL = "https://mooc-php-backend.onrender.com/api/auth";
 // -----------------------------------------------------------------------
 
-// NEW CONSTANT for minimum password length
+// Minimum password length constant
 const MIN_PASSWORD_LENGTH = 6;
 
 const ResetPassword = () => {
@@ -51,7 +51,7 @@ const ResetPassword = () => {
       return;
     }
     
-    // NEW: Password Length Validation (Client-side)
+    // Password Length Validation (Client-side)
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
         toast({
             title: "Validation Error",
@@ -61,12 +61,11 @@ const ResetPassword = () => {
         return;
     }
 
-
     setIsLoading(true);
 
     try {
-      // ✅ FIX: Added /api/auth/ to the path to match app.py
-      const response = await fetch(`${AUTH_API_URL}/api/auth/reset-password`, {
+      // ✅ Updated to use PHP endpoint
+      const response = await fetch(`${AUTH_API_URL}/reset_password.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, newPassword }),
@@ -169,7 +168,6 @@ const ResetPassword = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6 relative">
                 <div className="space-y-2">
-                  {/* UPDATED LABEL */}
                   <Label htmlFor="newPassword" className="text-white/80">
                     New Password (Min. {MIN_PASSWORD_LENGTH} Chars)
                   </Label>
@@ -232,7 +230,7 @@ const ResetPassword = () => {
                       )}
                       disabled={isLoading}
                     />
-                    {/* invisible for alignment (keeps your original structure) */}
+                    {/* Invisible button for alignment */}
                     <Button
                       type="button"
                       variant="ghost"
@@ -255,14 +253,14 @@ const ResetPassword = () => {
                   className="
                     w-full h-12
                     bg-[#F4B942] text-black
-                    hover:bg-[#e6a92f] active:bg-[#d9f2c]
+                    hover:bg-[#e6a92f] active:bg-[#d99f2c]
                     shadow-[0_16px_40px_rgba(0,0,0,0.25)]
                   "
                   disabled={
                     isLoading ||
                     newPassword !== confirmPassword ||
                     !newPassword ||
-                    newPassword.length < MIN_PASSWORD_LENGTH // ADDED MIN LENGTH CHECK
+                    newPassword.length < MIN_PASSWORD_LENGTH
                   }
                 >
                   {isLoading ? "Updating Password..." : "Update Password"}

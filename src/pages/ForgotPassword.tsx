@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// --- API Endpoint: Targeting the Flask Backend (app.py) ---
-const AUTH_API_URL = "https://mooc-python-backend.onrender.com";
+// --- API Endpoint: Targeting the PHP Backend ---
+const AUTH_API_URL = "https://mooc-php-backend.onrender.com/api/auth";
 // -----------------------------------------------------------------------
 
 // Utility function for basic email format validation
@@ -51,8 +51,8 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      // ✅ FIX: Added /api/auth/ to the path to match app.py
-      const response = await fetch(`${AUTH_API_URL}/api/auth/forgot-password`, {
+      // ✅ Updated to use PHP endpoint
+      const response = await fetch(`${AUTH_API_URL}/forgot_password.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -113,7 +113,7 @@ const ForgotPassword = () => {
               Forgot your password?
             </h1>
             <p className="text-white/65 mt-2">
-              Enter your email and we’ll send you a reset link.
+              Enter your email and we'll send you a reset link.
             </p>
           </div>
 
@@ -130,7 +130,7 @@ const ForgotPassword = () => {
                   If an account exists, we sent a reset link to{" "}
                   <span className="text-white">{email}</span>.
                   <br />
-                  Don’t forget to check spam/junk.
+                  Don't forget to check spam/junk.
                 </p>
                 <Button
                   className="

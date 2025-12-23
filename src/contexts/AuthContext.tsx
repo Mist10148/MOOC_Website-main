@@ -3,10 +3,13 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 // =======================================================================
 // ✅ API CONFIGURATION: HYBRID BACKEND
 // =======================================================================
-// PHP auth API base (Login, Register, Update Profile)
+// Ensure these use HTTPS to avoid "Mixed Content" errors
+// PHP auth API base (Login, Register, Update Profile, Password Reset)
 const AUTH_API_BASE = "https://mooc-php-backend.onrender.com/api/auth";
-// Flask API base for secure endpoints (Delete Account, Reset Password)
-const FLASK_API_BASE = "https://mooc-python-backend.onrender.com";
+
+// ⚠️ Flask API base for secure endpoints (Delete Account only)
+const FLASK_API_BASE = "https://mooc-python-backend.onrender.com"; 
+
 // =======================================================================
 
 // -----------------------------------------------------------------------
@@ -253,15 +256,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.warn("Non-JSON register response:", raw);
       }
 
-      const dbUserId = json.userId;
+      const dbUserId = json.user?.id;
       if (!dbUserId) {
-        return {
-          error: "Registration succeeded but no userId returned from server.",
-        };
+        console.error("Register response missing user.id:", json);
+        return { error: "Registration succeeded but no user ID returned." };
       }
 
-      // ✅ If the user already picked an avatar previously on this device,
-      // keep it (rare but consistent)
+      // ✅ Re-hydrate avatar from per-user key if it existed (e.g. re-registration)
       const persistedAvatar = readStoredAvatar(data.email);
 
       const newUser: User = {
@@ -392,18 +393,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // --- END UPDATE PROFILE IMPLEMENTATION ---
 
   // -----------------------------------------------------------------------
-  // 3. SECURE FUNCTIONS (FLASK BACKED)
+  // 3. SECURE FUNCTIONS
   // -----------------------------------------------------------------------
 
-  // --- RESET PASSWORD IMPLEMENTATION (FLASK: /api/auth/forgot-password) ---
+  // --- RESET PASSWORD IMPLEMENTATION (PHP: /forgot_password.php) ---
   const resetPassword = async (
     email: string
   ): Promise<{ error: string | null }> => {
-    const RESET_PASSWORD_API = `${FLASK_API_BASE}/api/auth/forgot-password`;
+    
+    // ✅ Updated to use PHP endpoint
+    const RESET_PASSWORD_API = `${AUTH_API_BASE}/forgot_password.php`;
+    
+    console.log("Attempting to fetch password reset:", RESET_PASSWORD_API);
 
     try {
       const res = await fetch(RESET_PASSWORD_API, {
         method: "POST",
+        mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
@@ -416,6 +422,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const json = raw ? JSON.parse(raw) : null;
           if (json?.message) message = json.message;
         } catch {}
+        console.error("Reset Password Error:", res.status, message);
         return { error: message };
       }
 
@@ -424,14 +431,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Reset password network error:", error);
       return {
         error:
-          "A network error occurred while requesting the reset link. Ensure Flask server is running on port 5000.",
+          "A network error occurred. Please check your internet connection.",
       };
     }
   };
 
   // --- DELETE ACCOUNT IMPLEMENTATION (FLASK: /api/auth/delete) ---
-  const DELETE_ACCOUNT_API = `${FLASK_API_BASE}/api/auth/delete`;
-
   const deleteAccount = async (
     password: string
   ): Promise<{ error: string | null }> => {
@@ -443,10 +448,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!token) {
       return { error: "Authentication token is missing. Please log in again." };
     }
+    
+    // ✅ Ensure trailing slashes don't break the path
+    const cleanBase = FLASK_API_BASE.replace(/\/+$/, "");
+    const DELETE_ACCOUNT_API = `${cleanBase}/api/auth/delete`;
 
     try {
       const response = await fetch(DELETE_ACCOUNT_API, {
         method: "DELETE",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -476,7 +486,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Delete account network error:", err);
       return {
         error:
-          "A network error occurred during account deletion. Ensure Flask server is running on port 5000.",
+          "A network error occurred during account deletion.",
       };
     }
   };
